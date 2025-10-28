@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <title>โปรแกรมแปลงเงินเรียลไทม์</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/10826/10826388.png">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background: linear-gradient(135deg, #f0f9ff, #cbebff);
+        font-family: "Prompt", sans-serif;
+      }
+      .card {
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      .spinner-border {
+        display: none;
+        margin: 10px auto;
+      }
+    </style>
+  </head>
+  <body class="d-flex flex-column align-items-center p-3">
+    <div class="container mt-4">
+      <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-10">
+          <div class="card p-4">
+            <h3 class="text-center">โปรแกรมแปลงเงินเรียลไทม์</h3>
+            <h5 class="text-center mb-3">Frankfurter API</h5>
+
+            <div class="mb-3">
+              <label>จำนวนเงิน</label>
+              <input
+                id="amount"
+                type="number"
+                class="form-control"
+                placeholder="กรอกจำนวนเงิน"
+                step="0.01"
+              />
+            </div>
+
+            <div class="row align-items-end mb-3">
+              <div class="col-5">
+                <label>จาก</label>
+                <select id="from" class="form-select"></select>
+              </div>
+              <div class="col-2 text-center">
+                <button
+                  id="swapBtn"
+                  class="btn btn-outline-secondary w-100"
+                  title="สลับสกุลเงิน"
+                >
+                  🔄
+                </button>
+              </div>
+              <div class="col-5">
+                <label>เป็น</label>
+                <select id="to" class="form-select"></select>
+              </div>
+            </div>
+
+            <button class="btn btn-primary w-100 mb-3" onclick="convert()">
+              แปลงค่าเงิน
+            </button>
+
+            <div class="text-center">
+              <div
+                class="spinner-border text-primary"
+                id="loader"
+                role="status"
+              ></div>
+            </div>
+
+            <div id="result" class="text-center fs-5 text-success mb-3"></div>
+
+            <div class="card p-3">
+              <h5 class="text-center">🕒 ประวัติการแปลงค่าเงิน</h5>
+
+              <div class="d-flex justify-content-between mb-2">
+                <button class="btn btn-sm btn-danger" id="clearAllBtn">
+                  ล้างทั้งหมด
+                </button>
+                <button class="btn btn-sm btn-warning" id="deleteSelectedBtn">
+                  ลบที่เลือก
+                </button>
+              </div>
+
+              <ul
+                id="history-list"
+                class="list-group list-group-flush"
+                style="max-height: 300px; overflow-y: auto"
+              ></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="clearAllModal"
+      tabindex="-1"
+      aria-labelledby="clearAllModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="clearAllModalLabel">
+              ล้างประวัติทั้งหมด
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            คุณแน่ใจหรือไม่ว่าต้องการล้างประวัติทั้งหมด?
+            การกระทำนี้ไม่สามารถย้อนกลับได้
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              ยกเลิก
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="confirmClearAllBtn"
+            >
+              ล้างทั้งหมด
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+      <div id="toastContainer"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      const fromSelect = document.getElementById("from");
+      const toSelect = document.getElementById("to");
+      const loader = document.getElementById("loader");
+      const historyList = document.getElementById("history-list");
+
+      function formatNumber(num) {
+        return Number(num).toLocaleString("en-US", {
+          maximumFractionDigits: 2,
+        });
+      }
+
+      async function loadCurrencies() {
+        try {
+          const res = await fetch("https://api.frankfurter.app/currencies");
+          const data = await res.json();
+
+          fromSelect.innerHTML = "";
+          toSelect.innerHTML = "";
+
+          for (const [code, name] of Object.entries(data)) {
+            const option = `<option value="${code}">${code} - ${name}</option>`;
+            fromSelect.insertAdjacentHTML("beforeend", option);
+            toSelect.insertAdjacentHTML("beforeend", option);
+          }
+
+          fromSelect.value = "USD";
+          toSelect.value = "THB";
+        } catch (err) {
+          console.error("Failed to load currencies:", err);
+          showToast("❌ ไม่สามารถโหลดสกุลเงินจาก API ได้", "danger");
+        }
+      }
+
+      loadCurrencies();
+
+      document.getElementById("swapBtn").addEventListener("click", () => {
+        const temp = fromSelect.value;
+        fromSelect.value = toSelect.value;
+        toSelect.value = temp;
+      });
+
+      const history = JSON.parse(localStorage.getItem("history") || "[]");
+      history.forEach(addHistoryItem);
+
+      function addHistoryItem(h) {
+        const item = document.createElement("li");
+        item.classList.add("list-group-item", "d-flex", "align-items-center");
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.classList.add("me-2");
+        item.appendChild(checkbox);
+
+        const text = document.createElement("span");
+        text.innerHTML = `${formatNumber(h.amount)} ${
+          h.from
+        } ➜ <b>${formatNumber(h.result)}</b> ${
+          h.to
+        } <span class="text-muted">(rate: ${h.rate})</span>`;
+        item.appendChild(text);
+
+        const delBtn = document.createElement("button");
+        delBtn.classList.add("btn", "btn-sm", "btn-outline-danger", "ms-auto");
+        delBtn.textContent = "❌";
+        delBtn.onclick = () => {
+          historyList.removeChild(item);
+          const idx = history.indexOf(h);
+          if (idx > -1) history.splice(idx, 1);
+          localStorage.setItem("history", JSON.stringify(history));
+          showToast("🗑️ ลบประวัติเรียบร้อย", "warning");
+        };
+        item.appendChild(delBtn);
+
+        historyList.prepend(item);
+      }
+
+      function showToast(message, type = "success") {
+        const toastId = "toast" + Date.now();
+        const toastHTML = `
+        <div id="${toastId}" class="toast align-items-center text-white bg-${type} border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body">${message}</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>`;
+        const container = document.getElementById("toastContainer");
+        container.insertAdjacentHTML("beforeend", toastHTML);
+        const toastEl = document.getElementById(toastId);
+        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+        toast.show();
+      }
+
+      document.getElementById("clearAllBtn").addEventListener("click", () => {
+        const clearModal = new bootstrap.Modal(
+          document.getElementById("clearAllModal")
+        );
+        clearModal.show();
+      });
+
+      document
+        .getElementById("confirmClearAllBtn")
+        .addEventListener("click", () => {
+          historyList.innerHTML = "";
+          history.length = 0;
+          localStorage.removeItem("history");
+          showToast("✅ ล้างประวัติทั้งหมดเรียบร้อยแล้ว", "success");
+          const clearModal = bootstrap.Modal.getInstance(
+            document.getElementById("clearAllModal")
+          );
+          clearModal.hide();
+        });
+
+      document
+        .getElementById("deleteSelectedBtn")
+        .addEventListener("click", () => {
+          const items = Array.from(historyList.children);
+          let removed = 0;
+          items.forEach((li, idx) => {
+            const cb = li.querySelector("input[type='checkbox']");
+            if (cb && cb.checked) {
+              historyList.removeChild(li);
+              history.splice(idx, 1);
+              removed++;
+            }
+          });
+          localStorage.setItem("history", JSON.stringify(history));
+          if (removed) showToast(`🗑️ ลบ ${removed} รายการเรียบร้อย`, "warning");
+        });
+
+      async function convert() {
+        const amount = parseFloat(document.getElementById("amount").value);
+        const from = fromSelect.value;
+        const to = toSelect.value;
+
+        if (!amount || amount <= 0)
+          return showToast("❌ กรุณากรอกจำนวนเงินที่ถูกต้อง", "danger");
+
+        loader.style.display = "inline-block";
+        document.getElementById("result").textContent = "";
+
+        try {
+          const res = await fetch(
+            `https://api.frankfurter.app/latest?amount=${amount}&from=${from}&to=${to}`
+          );
+          const data = await res.json();
+          const result = data.rates[to];
+          document.getElementById("result").innerHTML = `${formatNumber(
+            amount
+          )} ${from} = <b>${formatNumber(
+            result
+          )}</b> ${to} <br> (อัตราแลกเปลี่ยน: ${data.rates[to] / amount})`;
+
+          const historyItem = {
+            amount,
+            from,
+            to,
+            result,
+            rate: (data.rates[to] / amount).toFixed(4),
+          };
+          history.push(historyItem);
+          localStorage.setItem("history", JSON.stringify(history));
+          addHistoryItem(historyItem);
+          showToast(`💱 แปลงค่าเงินเรียบร้อย`, "success");
+        } catch (err) {
+          console.error(err);
+          showToast("❌ เกิดข้อผิดพลาดในการแปลงค่าเงิน", "danger");
+        } finally {
+          loader.style.display = "none";
+        }
+      }
+    </script>
+  </body>
+</html>
