@@ -249,6 +249,10 @@
     <div class="converter-card">
       <h3>โปรแกรมแปลงค่าเงินเรียลไทม์</h3>
       <h5>ใช้ข้อมูลจาก Frankfurter API</h5>
+      <div class="text-center mb-3">
+  <button id="showIntroBtn" class="btn">ℹ️</button>
+</div>
+
 
       <div class="mb-3">
         <label>จำนวนเงิน</label>
@@ -265,10 +269,12 @@
         <div class="col-12 col-md-5 mb-2 mb-md-0">
           <label>จาก</label>
           <select id="from" class="form-select">
-            <option value="USD" selected>USD - ดอลลาร์สหรัฐ</option>
-            <option value="THB">THB - บาท</option>
-            <option value="EUR">EUR - ยูโร</option>
-          </select>
+  {% for code, name in currencies.items() %}
+    <option value="{{ code }}" {% if code == 'USD' %}selected{% endif %}>{{ code }} - {{ name }}</option>
+  {% endfor %}
+</select>
+
+
         </div>
         <div class="col-12 col-md-2 d-flex justify-content-center my-2 my-md-0">
           <button
@@ -282,10 +288,10 @@
         <div class="col-12 col-md-5">
           <label>เป็น</label>
           <select id="to" class="form-select">
-            <option value="THB" selected>THB - บาท</option>
-            <option value="USD">USD - ดอลลาร์สหรัฐ</option>
-            <option value="EUR">EUR - ยูโร</option>
-          </select>
+  {% for code, name in currencies.items() %}
+    <option value="{{ code }}" {% if code == 'THB' %}selected{% endif %}>{{ code }} - {{ name }}</option>
+  {% endfor %}
+</select>
         </div>
       </div>
 
@@ -459,18 +465,30 @@
           console.error(e);
         }
       }
-      document.addEventListener("DOMContentLoaded", function () {
-        const introShown = localStorage.getItem("introShown");
 
-        if (!introShown) {
-          const introModal = new bootstrap.Modal(
-            document.getElementById("introModal")
-          );
+      const hasSeenIntro = localStorage.getItem("hasSeenIntro");
+
+
+      if (!hasSeenIntro) {
+        const introModalEl = document.getElementById("introModal");
+        if (introModalEl) {
+          const introModal = new bootstrap.Modal(introModalEl);
           introModal.show();
 
-          localStorage.setItem("introShown", "true");
+
+          localStorage.setItem("hasSeenIntro", "true");
         }
-      });
+      }
+
+      document.getElementById("showIntroBtn").addEventListener("click", () => {
+      const introModalEl = document.getElementById("introModal");
+      if (introModalEl) {
+        const introModal = new bootstrap.Modal(introModalEl);
+        introModal.show();
+      }
+    });
+
+
     </script>
   </body>
 </html>
