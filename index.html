@@ -250,9 +250,8 @@
       <h3>โปรแกรมแปลงค่าเงินเรียลไทม์</h3>
       <h5>ใช้ข้อมูลจาก Frankfurter API</h5>
       <div class="text-center mb-3">
-  <button id="showIntroBtn" class="btn">ℹ️</button>
-</div>
-
+        <button id="showIntroBtn" class="btn">ℹ️</button>
+      </div>
 
       <div class="mb-3">
         <label>จำนวนเงิน</label>
@@ -268,13 +267,7 @@
       <div class="row align-items-md-end mb-3 text-center text-md-start">
         <div class="col-12 col-md-5 mb-2 mb-md-0">
           <label>จาก</label>
-          <select id="from" class="form-select">
-  {% for code, name in currencies.items() %}
-    <option value="{{ code }}" {% if code == 'USD' %}selected{% endif %}>{{ code }} - {{ name }}</option>
-  {% endfor %}
-</select>
-
-
+          <select id="from" class="form-select"></select>
         </div>
         <div class="col-12 col-md-2 d-flex justify-content-center my-2 my-md-0">
           <button
@@ -287,11 +280,7 @@
         </div>
         <div class="col-12 col-md-5">
           <label>เป็น</label>
-          <select id="to" class="form-select">
-  {% for code, name in currencies.items() %}
-    <option value="{{ code }}" {% if code == 'THB' %}selected{% endif %}>{{ code }} - {{ name }}</option>
-  {% endfor %}
-</select>
+          <select id="to" class="form-select"></select>
         </div>
       </div>
 
@@ -342,6 +331,54 @@
       const historyList = document.getElementById("history-list");
       const resultBox = document.getElementById("result");
       const history = JSON.parse(localStorage.getItem("history") || "[]");
+
+      const currencies = {
+        AUD: "Australian Dollar",
+        BGN: "Bulgarian Lev",
+        BRL: "Brazilian Real",
+        CAD: "Canadian Dollar",
+        CHF: "Swiss Franc",
+        CNY: "Chinese Renminbi Yuan",
+        CZK: "Czech Koruna",
+        DKK: "Danish Kroner",
+        EUR: "Euro",
+        GBP: "British Pound",
+        HKD: "Hong Kong Dollar",
+        HUF: "Hungarian Forint",
+        IDR: "Indonesian Rupiah",
+        ILS: "Israeli New Shekel",
+        INR: "Indian Rupee",
+        ISK: "Icelandic Króna",
+        JPY: "Japanese Yen",
+        KRW: "South Korean Won",
+        MXN: "Mexican Peso",
+        MYR: "Malaysian Ringgit",
+        NOK: "Norwegian Krone",
+        NZD: "New Zealand Dollar",
+        PHP: "Philippine Peso",
+        PLN: "Polish Złoty",
+        RON: "Romanian Leu",
+        SEK: "Swedish Krona",
+        SGD: "Singapore Dollar",
+        THB: "Thai Baht",
+        TRY: "Turkish Lira",
+        USD: "United States Dollar",
+        ZAR: "South African Rand",
+      };
+
+      for (const [code, name] of Object.entries(currencies)) {
+        const optionFrom = document.createElement("option");
+        optionFrom.value = code;
+        optionFrom.textContent = `${code} - ${name}`;
+        if (code === "USD") optionFrom.selected = true;
+        fromSelect.appendChild(optionFrom);
+
+        const optionTo = document.createElement("option");
+        optionTo.value = code;
+        optionTo.textContent = `${code} - ${name}`;
+        if (code === "THB") optionTo.selected = true;
+        toSelect.appendChild(optionTo);
+      }
 
       function formatNumber(num) {
         return Number(num).toLocaleString("en-US", {
@@ -468,27 +505,23 @@
 
       const hasSeenIntro = localStorage.getItem("hasSeenIntro");
 
-
       if (!hasSeenIntro) {
         const introModalEl = document.getElementById("introModal");
         if (introModalEl) {
           const introModal = new bootstrap.Modal(introModalEl);
           introModal.show();
 
-
           localStorage.setItem("hasSeenIntro", "true");
         }
       }
 
       document.getElementById("showIntroBtn").addEventListener("click", () => {
-      const introModalEl = document.getElementById("introModal");
-      if (introModalEl) {
-        const introModal = new bootstrap.Modal(introModalEl);
-        introModal.show();
-      }
-    });
-
-
+        const introModalEl = document.getElementById("introModal");
+        if (introModalEl) {
+          const introModal = new bootstrap.Modal(introModalEl);
+          introModal.show();
+        }
+      });
     </script>
   </body>
 </html>
