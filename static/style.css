@@ -1,0 +1,171 @@
+body {
+  font-family: "Prompt", sans-serif;
+  background: linear-gradient(145deg, #e8f4ff, #f8fbff);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 10px;
+}
+
+.converter-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  padding: 30px 25px;
+  width: 100%;
+  max-width: 500px;
+  transition: 0.3s;
+}
+
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, .25);
+}
+
+.converter-card:hover {
+  transform: translateY(-4px);
+}
+
+h3 {
+  font-weight: 600;
+  text-align: center;
+  color: #0077cc;
+}
+
+h5 {
+  text-align: center;
+  color: #6c757d;
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: 500;
+  color: #333;
+}
+
+input,
+select {
+  border-radius: 10px !important;
+}
+
+#swapBtn {
+  width: 50px;
+  height: 50px;
+  font-size: 1.3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
+}
+
+#swapBtn:hover {
+  transform: rotate(180deg);
+  color: white;
+}
+
+.btn-primary {
+  background: #0077cc;
+  border: none;
+  border-radius: 10px;
+  transition: 0.2s;
+}
+
+.btn-primary:hover {
+  background: #005fa3;
+}
+
+
+.chart-card {
+    position: static;
+    width: 100%;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+    margin-top: 20px;
+}
+
+.result-box {
+  font-size: 1.2rem;
+  margin-top: 15px;
+  font-weight: 500;
+  color: #007b55;
+}
+
+.history-entry:hover {
+  background: rgba(0, 119, 204, 0.08);
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.history-entry:active {
+  background: rgba(0, 119, 204, 0.15);
+}
+
+.history-card {
+  background: #f9fbff;
+  border-radius: 12px;
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #e0e7ef;
+}
+
+.history-card h5 {
+  color: #0077cc;
+  font-weight: 500;
+}
+
+.list-group-item {
+  border: none;
+  border-bottom: 1px solid #eee;
+}
+
+.list-group-item:last-child {
+  border-bottom: none;
+}
+
+.toast {
+  border-radius: 8px;
+}
+
+#result {
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+#result.show {
+  opacity: 1;
+}
+
+
+
+.modal-content {
+  font-family: "Prompt", sans-serif;
+}
+
+.modal-body p {
+  line-height: 1.6;
+}
+
+@media(max-width:576px) {
+  .converter-card {
+    padding: 20px;
+  }
+
+  h3 {
+    font-size: 1.4rem;
+  }
+
+  .btn {
+    font-size: 0.95rem;
+  }
+}
+@media (max-width: 768px) {
+  .chart-card {
+    position: static !important;
+    width: 100% !important;
+    margin-top: 20px;
+    box-shadow: none;
+  }
+}

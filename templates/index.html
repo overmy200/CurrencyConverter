@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <title>โปรแกรมแปลงเงินเรียลไทม์</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="static/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="https://cdn-icons-png.flaticon.com/512/10826/10826388.png"
+    />
+  </head>
+  <body>
+    <div class="modal fade" id="introModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+          <div class="modal-header bg-primary text-white rounded-top-4">
+            <h5 class="modal-title text-white">ข้อมูลของเว็บไซต์</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>เว็บไซต์นี้ถูกสร้างขึ้นด้วย:</p>
+            <ul>
+              <li>
+                <b>HTML, CSS, JavaScript</b>
+              </li>
+              <li>
+                <b>Python</b>
+              </li>
+              <li>
+                <b>Bootstrap 5</b>
+              </li>
+              <li>
+                <b>jQuery</b>
+              </li>
+              <li>
+                <b>Frankfurter API</b>
+              </li>
+              <li><b>LocalStorage</b></li>
+            </ul>
+
+            <p>ขั้นตอนการสร้างเว็บไซต์:</p>
+            <ol>
+              <li>สร้าง form แปลงเงิน, ปุ่ม, modal, list ประวัติ</li>
+              <li>layout, สี, modal, toast, responsive design</li>
+              <li>
+                logic ของการแปลงเงิน, swap สกุลเงิน, เพิ่มประวัติ, ลบประวัติ,
+                toast
+              </li>
+              <li>fetch Frankfurter API มาแปลงเงิน</li>
+              <li>เก็บและดึงข้อมูลประวัติจาก localStorage</li>
+              <li>เสร็จส่งครู</li>
+            </ol>
+            <p>
+              จัดทำโดย: <br />นาย ณัฏฐณิชา คอนโตร เลขที่ 3 ปวช.3/1 IT<br />นาย
+              ธนดล สวัสดิ์นที เลขที่ 5 ปวช.3/1 IT
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary w-100" data-bs-dismiss="modal">
+              เริ่มใช้งาน
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="converter-card">
+      <h3>โปรแกรมแปลงค่าเงินเรียลไทม์</h3>
+      <h5>ใช้ข้อมูลจาก Frankfurter API</h5>
+
+      <div class="mb-3">
+        <label>จำนวนเงิน</label>
+        <input
+          id="amount"
+          type="number"
+          class="form-control"
+          placeholder="เช่น 1000"
+          step="0.01"
+        />
+      </div>
+
+      <div class="row align-items-md-end mb-3 text-center text-md-start">
+        <div class="col-12 col-md-5 mb-2 mb-md-0">
+          <label>จาก</label>
+          <select id="from" class="form-select">
+            <option value="USD" selected>USD - ดอลลาร์สหรัฐ</option>
+            <option value="THB">THB - บาท</option>
+            <option value="EUR">EUR - ยูโร</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-2 d-flex justify-content-center my-2 my-md-0">
+          <button
+            id="swapBtn"
+            class="btn rounded-circle shadow-sm swap-btn"
+            title="สลับสกุลเงิน"
+          >
+            🔄
+          </button>
+        </div>
+        <div class="col-12 col-md-5">
+          <label>เป็น</label>
+          <select id="to" class="form-select">
+            <option value="THB" selected>THB - บาท</option>
+            <option value="USD">USD - ดอลลาร์สหรัฐ</option>
+            <option value="EUR">EUR - ยูโร</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn btn-primary w-100 mb-3" onclick="convert()">
+        แปลงค่าเงิน
+      </button>
+
+      <div class="text-center">
+        <div
+          class="spinner-border text-primary"
+          id="loader"
+          style="display: none"
+        ></div>
+      </div>
+
+      <div id="result" class="text-center result-box"></div>
+
+      <div class="history-card">
+        <h5>🕒 ประวัติการแปลงค่าเงิน</h5>
+        <div class="d-flex justify-content-between mb-2">
+          <button class="btn btn-sm btn-outline-danger" id="clearAllBtn">
+            ล้างทั้งหมด
+          </button>
+        </div>
+        <ul
+          id="history-list"
+          class="list-group list-group-flush"
+          style="max-height: 300px; overflow-y: auto"
+        ></ul>
+      </div>
+      <div class="chart-card">
+        <h6>📈 แนวโน้มอัตราแลกเปลี่ยน</h6>
+        <canvas id="exchangeChart" height="250"></canvas>
+      </div>
+
+      <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="toastContainer"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      const fromSelect = document.getElementById("from");
+      const toSelect = document.getElementById("to");
+      const loader = document.getElementById("loader");
+      const historyList = document.getElementById("history-list");
+      const resultBox = document.getElementById("result");
+      const history = JSON.parse(localStorage.getItem("history") || "[]");
+
+      function formatNumber(num) {
+        return Number(num).toLocaleString("en-US", {
+          maximumFractionDigits: 2,
+        });
+      }
+
+      history.forEach((h) => addHistoryItem(h));
+
+      function addHistoryItem(h) {
+        const li = document.createElement("li");
+        li.className = "list-group-item";
+        li.textContent = `${formatNumber(h.amount)} ${h.from} ➜ ${formatNumber(
+          h.result
+        )} ${h.to} (rate: ${h.rate})`;
+        historyList.appendChild(li);
+      }
+
+      function showToast(msg, type = "info", time = 2000) {
+        const toastId = "toast" + Date.now();
+        const toastHtml = `<div id="${toastId}" class="toast align-items-center text-bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="d-flex">
+    <div class="toast-body">${msg}</div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+  </div></div>`;
+        const container = document.getElementById("toastContainer");
+        container.insertAdjacentHTML("beforeend", toastHtml);
+        const toastEl = document.getElementById(toastId);
+        new bootstrap.Toast(toastEl, { delay: time }).show();
+        toastEl.addEventListener("hidden.bs.toast", () => toastEl.remove());
+      }
+
+      async function convert() {
+        const amount = parseFloat(document.getElementById("amount").value);
+        const from = fromSelect.value;
+        const to = toSelect.value;
+        if (!amount || amount <= 0) {
+          showToast("❌ กรุณากรอกจำนวนเงินถูกต้อง", "danger");
+          return;
+        }
+        if (from === to) {
+          showToast("⚠️ กรุณาเลือกสกุลเงินที่ต่างกัน", "warning");
+          return;
+        }
+        loader.style.display = "inline-block";
+        try {
+          const res = await fetch(
+            `https://api.frankfurter.app/latest?amount=${amount}&from=${from}&to=${to}`
+          );
+          const data = await res.json();
+          const result = data.rates[to];
+          const rate = (result / amount).toFixed(4);
+          resultBox.innerHTML = `${formatNumber(
+            amount
+          )} ${from} = <b>${formatNumber(
+            result
+          )}</b> ${to}<br><small class="text-muted">(rate: ${rate})</small>`;
+          history.push({ amount, from, to, result, rate });
+          localStorage.setItem("history", JSON.stringify(history));
+          addHistoryItem({ amount, from, to, result, rate });
+          showToast("💱 แปลงค่าเงินสำเร็จ", "success");
+          updateChart(from, to);
+        } catch (e) {
+          showToast("❌ เกิดข้อผิดพลาด", "danger");
+        } finally {
+          loader.style.display = "none";
+          resultBox.classList.add("show");
+        }
+      }
+
+      document.getElementById("swapBtn").addEventListener("click", () => {
+        const from = fromSelect.value,
+          to = toSelect.value;
+        fromSelect.value = to;
+        toSelect.value = from;
+      });
+
+      document.getElementById("clearAllBtn").addEventListener("click", () => {
+        localStorage.removeItem("history");
+        historyList.innerHTML = "";
+        history.length = 0;
+      });
+
+      let exchangeChart = null;
+      async function updateChart(from, to) {
+        try {
+          const end = new Date();
+          const start = new Date();
+          start.setDate(end.getDate() - 7);
+          const res = await fetch(
+            `https://api.frankfurter.app/${
+              start.toISOString().split("T")[0]
+            }..${end.toISOString().split("T")[0]}?from=${from}&to=${to}`
+          );
+          const data = await res.json();
+          const labels = Object.keys(data.rates);
+          const values = labels.map((d) => data.rates[d][to]);
+          if (exchangeChart) {
+            exchangeChart.destroy();
+          }
+          const ctx = document.getElementById("exchangeChart").getContext("2d");
+          exchangeChart = new Chart(ctx, {
+            type: "line",
+            data: {
+              labels,
+              datasets: [
+                {
+                  label: `${from} ➜ ${to}`,
+                  data: values,
+                  borderColor: "blue",
+                  tension: 0.3,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              plugins: { legend: { display: false } },
+            },
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        const introShown = localStorage.getItem("introShown");
+
+        if (!introShown) {
+          const introModal = new bootstrap.Modal(
+            document.getElementById("introModal")
+          );
+          introModal.show();
+
+          localStorage.setItem("introShown", "true");
+        }
+      });
+    </script>
+  </body>
+</html>
