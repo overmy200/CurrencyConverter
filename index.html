@@ -16,6 +16,13 @@
       rel="icon"
       href="https://cdn-icons-png.flaticon.com/512/10826/10826388.png"
     />
+
+    <!-- ✅ เพิ่ม Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+
     <style>
       body {
         font-family: "Prompt", sans-serif;
@@ -37,35 +44,8 @@
         transition: 0.3s;
       }
 
-      .form-control:focus {
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-      }
-
       .converter-card:hover {
         transform: translateY(-4px);
-      }
-
-      h3 {
-        font-weight: 600;
-        text-align: center;
-        color: #0077cc;
-      }
-
-      h5 {
-        text-align: center;
-        color: #6c757d;
-        margin-bottom: 20px;
-      }
-
-      label {
-        font-weight: 500;
-        color: #333;
-      }
-
-      input,
-      select {
-        border-radius: 10px !important;
       }
 
       #swapBtn {
@@ -78,31 +58,9 @@
         justify-content: center;
         transition: 0.3s;
       }
-
       #swapBtn:hover {
         transform: rotate(180deg);
         color: white;
-      }
-
-      .btn-primary {
-        background: #0077cc;
-        border: none;
-        border-radius: 10px;
-        transition: 0.2s;
-      }
-
-      .btn-primary:hover {
-        background: #005fa3;
-      }
-
-      .chart-card {
-        position: static;
-        width: 100%;
-        background: white;
-        padding: 15px;
-        border-radius: 10px;
-        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
-        margin-top: 20px;
       }
 
       .result-box {
@@ -112,42 +70,6 @@
         color: #007b55;
       }
 
-      .history-entry:hover {
-        background: rgba(0, 119, 204, 0.08);
-        border-radius: 8px;
-        transition: 0.2s;
-      }
-
-      .history-entry:active {
-        background: rgba(0, 119, 204, 0.15);
-      }
-
-      .history-card {
-        background: #f9fbff;
-        border-radius: 12px;
-        margin-top: 20px;
-        padding: 15px;
-        border: 1px solid #e0e7ef;
-      }
-
-      .history-card h5 {
-        color: #0077cc;
-        font-weight: 500;
-      }
-
-      .list-group-item {
-        border: none;
-        border-bottom: 1px solid #eee;
-      }
-
-      .list-group-item:last-child {
-        border-bottom: none;
-      }
-
-      .toast {
-        border-radius: 8px;
-      }
-
       #result {
         opacity: 0;
         transition: all 0.3s ease;
@@ -155,39 +77,11 @@
       #result.show {
         opacity: 1;
       }
-
-      .modal-content {
-        font-family: "Prompt", sans-serif;
-      }
-
-      .modal-body p {
-        line-height: 1.6;
-      }
-
-      @media (max-width: 576px) {
-        .converter-card {
-          padding: 20px;
-        }
-
-        h3 {
-          font-size: 1.4rem;
-        }
-
-        .btn {
-          font-size: 0.95rem;
-        }
-      }
-      @media (max-width: 768px) {
-        .chart-card {
-          position: static !important;
-          width: 100% !important;
-          margin-top: 20px;
-          box-shadow: none;
-        }
-      }
     </style>
   </head>
+
   <body>
+    <!-- Modal แนะนำเว็บไซต์ -->
     <div class="modal fade" id="introModal" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 rounded-4 shadow">
@@ -199,24 +93,15 @@
               data-bs-dismiss="modal"
             ></button>
           </div>
+
           <div class="modal-body">
             <p>เว็บไซต์นี้ถูกสร้างขึ้นด้วย:</p>
             <ul>
-              <li>
-                <b>HTML, CSS, JavaScript</b>
-              </li>
-              <li>
-                <b>Python</b>
-              </li>
-              <li>
-                <b>Bootstrap 5</b>
-              </li>
-              <li>
-                <b>jQuery</b>
-              </li>
-              <li>
-                <b>Frankfurter API</b>
-              </li>
+              <li><b>HTML, CSS, JavaScript</b></li>
+              <li><b>Python</b></li>
+              <li><b>Bootstrap 5</b></li>
+              <li><b>jQuery</b></li>
+              <li><b>Frankfurter API</b></li>
               <li><b>LocalStorage</b></li>
             </ul>
 
@@ -232,11 +117,14 @@
               <li>เก็บและดึงข้อมูลประวัติจาก localStorage</li>
               <li>เสร็จส่งครู</li>
             </ol>
+
             <p>
-              จัดทำโดย: <br />นาย ณัฏฐณิชา คอนโตร เลขที่ 3 ปวช.3/1 IT<br />นาย
-              ธนดล สวัสดิ์นที เลขที่ 5 ปวช.3/1 IT
+              จัดทำโดย: <br />
+              นาย ณัฏฐณิชา คอนโตร เลขที่ 3 ปวช.3/1 IT <br />
+              นาย ธนดล สวัสดิ์นที เลขที่ 5 ปวช.3/1 IT
             </p>
           </div>
+
           <div class="modal-footer">
             <button class="btn btn-primary w-100" data-bs-dismiss="modal">
               เริ่มใช้งาน
@@ -246,11 +134,15 @@
       </div>
     </div>
 
+    <!-- การ์ดแปลงเงิน -->
     <div class="converter-card">
       <h3>โปรแกรมแปลงค่าเงินเรียลไทม์</h3>
       <h5>ใช้ข้อมูลจาก Frankfurter API</h5>
+
       <div class="text-center mb-3">
-        <button id="showIntroBtn" class="btn">ℹ️</button>
+        <button id="showIntroBtn" class="btn">
+          <i class="bi bi-info-circle"></i>
+        </button>
       </div>
 
       <div class="mb-3">
@@ -269,15 +161,13 @@
           <label>จาก</label>
           <select id="from" class="form-select"></select>
         </div>
+
         <div class="col-12 col-md-2 d-flex justify-content-center my-2 my-md-0">
-          <button
-            id="swapBtn"
-            class="btn rounded-circle shadow-sm swap-btn"
-            title="สลับสกุลเงิน"
-          >
-            🔄
+          <button id="swapBtn" class="btn shadow-sm swap-btn">
+            <i class="bi bi-arrow-left-right"></i>
           </button>
         </div>
+
         <div class="col-12 col-md-5">
           <label>เป็น</label>
           <select id="to" class="form-select"></select>
@@ -298,21 +188,24 @@
 
       <div id="result" class="text-center result-box"></div>
 
-      <div class="history-card">
-        <h5>🕒 ประวัติการแปลงค่าเงิน</h5>
-        <div class="d-flex justify-content-between mb-2">
-          <button class="btn btn-sm btn-outline-danger" id="clearAllBtn">
-            ล้างทั้งหมด
-          </button>
-        </div>
+      <!-- ประวัติ -->
+      <div class="history-card mt-3 p-3 border rounded">
+        <h5><i class="bi bi-clock-history"></i> ประวัติการแปลงค่าเงิน</h5>
+
+        <button class="btn btn-sm btn-outline-danger mb-2" id="clearAllBtn">
+          <i class="bi bi-trash"></i> ล้างทั้งหมด
+        </button>
+
         <ul
           id="history-list"
           class="list-group list-group-flush"
           style="max-height: 300px; overflow-y: auto"
         ></ul>
       </div>
-      <div class="chart-card">
-        <h6>📈 แนวโน้มอัตราแลกเปลี่ยน</h6>
+
+      <!-- กราฟ -->
+      <div class="chart-card mt-3 p-3 border rounded">
+        <h6><i class="bi bi-graph-up"></i> แนวโน้มอัตราแลกเปลี่ยน</h6>
         <canvas id="exchangeChart" height="250"></canvas>
       </div>
 
@@ -324,6 +217,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ============================ JS ============================ -->
     <script>
       const fromSelect = document.getElementById("from");
       const toSelect = document.getElementById("to");
@@ -334,38 +229,39 @@
 
       const currencies = {
         AUD: "Australian Dollar",
-        BGN: "Bulgarian Lev",
-        BRL: "Brazilian Real",
-        CAD: "Canadian Dollar",
-        CHF: "Swiss Franc",
-        CNY: "Chinese Renminbi Yuan",
-        CZK: "Czech Koruna",
-        DKK: "Danish Kroner",
+        BGN: "Bulgarian Lev",
+        BRL: "Brazilian Real",
+        CAD: "Canadian Dollar",
+        CHF: "Swiss Franc",
+        CNY: "Chinese Renminbi Yuan",
+        CZK: "Czech Koruna",
+        DKK: "Danish Kroner",
         EUR: "Euro",
-        GBP: "British Pound",
-        HKD: "Hong Kong Dollar",
-        HUF: "Hungarian Forint",
-        IDR: "Indonesian Rupiah",
-        ILS: "Israeli New Shekel",
-        INR: "Indian Rupee",
-        ISK: "Icelandic Króna",
-        JPY: "Japanese Yen",
-        KRW: "South Korean Won",
-        MXN: "Mexican Peso",
-        MYR: "Malaysian Ringgit",
-        NOK: "Norwegian Krone",
-        NZD: "New Zealand Dollar",
-        PHP: "Philippine Peso",
-        PLN: "Polish Złoty",
-        RON: "Romanian Leu",
-        SEK: "Swedish Krona",
-        SGD: "Singapore Dollar",
-        THB: "Thai Baht",
-        TRY: "Turkish Lira",
-        USD: "United States Dollar",
-        ZAR: "South African Rand",
+        GBP: "British Pound",
+        HKD: "Hong Kong Dollar",
+        HUF: "Hungarian Forint",
+        IDR: "Indonesian Rupiah",
+        ILS: "Israeli New Shekel",
+        INR: "Indian Rupee",
+        ISK: "Icelandic Króna",
+        JPY: "Japanese Yen",
+        KRW: "South Korean Won",
+        MXN: "Mexican Peso",
+        MYR: "Malaysian Ringgit",
+        NOK: "Norwegian Krone",
+        NZD: "New Zealand Dollar",
+        PHP: "Philippine Peso",
+        PLN: "Polish Złoty",
+        RON: "Romanian Leu",
+        SEK: "Swedish Krona",
+        SGD: "Singapore Dollar",
+        THB: "Thai Baht",
+        TRY: "Turkish Lira",
+        USD: "United States Dollar",
+        ZAR: "South African Rand",
       };
 
+      // เติม dropdown
       for (const [code, name] of Object.entries(currencies)) {
         const optionFrom = document.createElement("option");
         optionFrom.value = code;
@@ -399,13 +295,16 @@
 
       function showToast(msg, type = "info", time = 2000) {
         const toastId = "toast" + Date.now();
-        const toastHtml = `<div id="${toastId}" class="toast align-items-center text-bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-  <div class="d-flex">
-    <div class="toast-body">${msg}</div>
-    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-  </div></div>`;
+        const toastHtml = `<div id="${toastId}" class="toast align-items-center text-bg-${type} border-0" role="alert">
+          <div class="d-flex">
+            <div class="toast-body">${msg}</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+          </div>
+        </div>`;
+
         const container = document.getElementById("toastContainer");
         container.insertAdjacentHTML("beforeend", toastHtml);
+
         const toastEl = document.getElementById(toastId);
         new bootstrap.Toast(toastEl, { delay: time }).show();
         toastEl.addEventListener("hidden.bs.toast", () => toastEl.remove());
@@ -415,15 +314,24 @@
         const amount = parseFloat(document.getElementById("amount").value);
         const from = fromSelect.value;
         const to = toSelect.value;
+
         if (!amount || amount <= 0) {
-          showToast("❌ กรุณากรอกจำนวนเงินถูกต้อง", "danger");
+          showToast(
+            '<i class="bi bi-x-circle"></i> กรุณากรอกจำนวนเงินถูกต้อง',
+            "danger"
+          );
           return;
         }
         if (from === to) {
-          showToast("⚠️ กรุณาเลือกสกุลเงินที่ต่างกัน", "warning");
+          showToast(
+            '<i class="bi bi-exclamation-triangle"></i> กรุณาเลือกสกุลเงินที่ต่างกัน',
+            "warning"
+          );
           return;
         }
+
         loader.style.display = "inline-block";
+
         try {
           const res = await fetch(
             `https://api.frankfurter.app/latest?amount=${amount}&from=${from}&to=${to}`
@@ -431,18 +339,28 @@
           const data = await res.json();
           const result = data.rates[to];
           const rate = (result / amount).toFixed(4);
+
           resultBox.innerHTML = `${formatNumber(
             amount
           )} ${from} = <b>${formatNumber(
             result
           )}</b> ${to}<br><small class="text-muted">(rate: ${rate})</small>`;
+
           history.push({ amount, from, to, result, rate });
           localStorage.setItem("history", JSON.stringify(history));
           addHistoryItem({ amount, from, to, result, rate });
-          showToast("💱 แปลงค่าเงินสำเร็จ", "success");
+
+          showToast(
+            '<i class="bi bi-check-circle"></i> แปลงค่าเงินสำเร็จ',
+            "success"
+          );
+
           updateChart(from, to);
         } catch (e) {
-          showToast("❌ เกิดข้อผิดพลาด", "danger");
+          showToast(
+            '<i class="bi bi-x-circle"></i> เกิดข้อผิดพลาด',
+            "danger"
+          );
         } finally {
           loader.style.display = "none";
           resultBox.classList.add("show");
@@ -450,8 +368,8 @@
       }
 
       document.getElementById("swapBtn").addEventListener("click", () => {
-        const from = fromSelect.value,
-          to = toSelect.value;
+        const from = fromSelect.value;
+        const to = toSelect.value;
         fromSelect.value = to;
         toSelect.value = from;
       });
@@ -460,26 +378,39 @@
         localStorage.removeItem("history");
         historyList.innerHTML = "";
         history.length = 0;
+
+        resultBox.innerHTML = "";
+        document.getElementById("amount").value = "";
+
+        if (exchangeChart) exchangeChart.destroy();
+
+        showToast('<i class="bi bi-trash"></i> ข้อมูลทั้งหมดถูกล้างแล้ว', "info");
       });
 
       let exchangeChart = null;
+
       async function updateChart(from, to) {
         try {
           const end = new Date();
           const start = new Date();
           start.setDate(end.getDate() - 7);
-          const res = await fetch(
-            `https://api.frankfurter.app/${
-              start.toISOString().split("T")[0]
-            }..${end.toISOString().split("T")[0]}?from=${from}&to=${to}`
-          );
+
+          const url = `https://api.frankfurter.app/${start
+            .toISOString()
+            .split("T")[0]}..${end.toISOString().split("T")[0]}?from=${from}&to=${to}`;
+
+          const res = await fetch(url);
           const data = await res.json();
+
           const labels = Object.keys(data.rates);
           const values = labels.map((d) => data.rates[d][to]);
-          if (exchangeChart) {
-            exchangeChart.destroy();
-          }
-          const ctx = document.getElementById("exchangeChart").getContext("2d");
+
+          if (exchangeChart) exchangeChart.destroy();
+
+          const ctx = document
+            .getElementById("exchangeChart")
+            .getContext("2d");
+
           exchangeChart = new Chart(ctx, {
             type: "line",
             data: {
@@ -493,34 +424,21 @@
                 },
               ],
             },
-            options: {
-              responsive: true,
-              plugins: { legend: { display: false } },
-            },
           });
         } catch (e) {
           console.error(e);
         }
       }
 
+      // Modal แนะนำครั้งแรก
       const hasSeenIntro = localStorage.getItem("hasSeenIntro");
-
       if (!hasSeenIntro) {
-        const introModalEl = document.getElementById("introModal");
-        if (introModalEl) {
-          const introModal = new bootstrap.Modal(introModalEl);
-          introModal.show();
-
-          localStorage.setItem("hasSeenIntro", "true");
-        }
+        new bootstrap.Modal(document.getElementById("introModal")).show();
+        localStorage.setItem("hasSeenIntro", "true");
       }
 
       document.getElementById("showIntroBtn").addEventListener("click", () => {
-        const introModalEl = document.getElementById("introModal");
-        if (introModalEl) {
-          const introModal = new bootstrap.Modal(introModalEl);
-          introModal.show();
-        }
+        new bootstrap.Modal(document.getElementById("introModal")).show();
       });
     </script>
   </body>
